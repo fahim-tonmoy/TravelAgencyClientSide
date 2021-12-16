@@ -1,0 +1,84 @@
+import React, { useEffect, useState } from "react";
+
+import styled from "styled-components";
+import useAuth from "../../hooks/useAuth";
+
+const MyOrder = () => {
+  const { user } = useAuth();
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    fetch(`https://afternoon-cliffs-30771.herokuapp.com/orders`)
+      .then((res) => res.json())
+      .then((data) => {
+        setOrders(data);
+        // console.log(data);
+      });
+  }, []);
+
+  // DELETE USER
+  const handleDeleteOrder = (id) => {
+    const proceed = window.confirm("Are you Sure you want to delete?");
+    if (proceed) {
+      const URL = `https://afternoon-cliffs-30771.herokuapp.com/orders/${id}`;
+      fetch(URL, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.deletedCount > 0) {
+            alert("deleted successfully!");
+            const remainingUsers = orders.filter((order) => order._id !== id);
+            setOrders(remainingUsers);
+          }
+          console.log(data);
+        });
+    }
+  };
+  return (
+    <MyOrderStyled>
+      <div className="container my-5">
+        <div className="user">
+          <h1 className="me-4">Welcome {user.displayName}</h1>
+          <img src={user.photoURL} alt="" />
+        </div>
+        <div>
+          <h1 className="my-5">Your Order list</h1>
+          {orders.map((order) => (
+            <div key={order._id}>
+              {user?.email === order?.email ? (
+                <div className="my-4 d-flex flex-row">
+                  <ul>
+                    <li className="fw-bold display-6">
+                      <p className="fw-bold">Order Details</p>
+                      <div className="">
+                        <h3>OrderId : {order._id}</h3>
+                        <h3>Ordered by: {order.name}</h3>
+                        <h3>Email : {order.email}</h3>
+                        <h3>Phone : {order.phone}</h3>
+                        <h3>Number of member : {order.member}</h3>
+                        <h3>Package Name : {order.packageName}</h3>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteOrder(order._id)}
+                        className="btn btn-danger"
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="">{""}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </MyOrderStyled>
+  );
+};
+
+const MyOrderStyled = styled.div``;
+
+export default MyOrder;
