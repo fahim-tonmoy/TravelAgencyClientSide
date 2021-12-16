@@ -1,6 +1,6 @@
 <h1>TravelGuru- A Travel Agency<h1>
 
-[Project Live Link](https://quirky-minsky-8ca914.netlify.app/).
+[Project Live Link](https://travelguru-dd004.web.app/).
 
 # Project Overview
 
